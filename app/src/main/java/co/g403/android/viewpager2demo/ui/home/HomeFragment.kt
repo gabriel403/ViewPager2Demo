@@ -18,15 +18,15 @@ class HomeFragment : Fragment() {
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
-	): View? {
-		val view = inflater.inflate(R.layout.home_fragment, container, false)
+	): View? = inflater.inflate(R.layout.home_fragment, container, false)
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 		view.testimonials_view_pager.adapter = testimonialsAdapter
-		return view
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-
 		viewModel.testimonials.observe(viewLifecycleOwner, Observer { list ->
 			testimonialsAdapter.submitList(list)
 		})
