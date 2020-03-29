@@ -2,38 +2,42 @@ package co.g403.android.viewpager2demo.testimonials
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.databinding.library.baseAdapters.BR
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import co.g403.android.viewpager2demo.testimonials.network.Testimonial
-import co.g403.android.viewpager2demo.ui.testimonials.TestimonialView
+import co.g403.android.viewpager2demo.R
+import co.g403.android.viewpager2demo.testimonials.datasource.Testimonial
 
-class TestimonialAdapter : RecyclerView.Adapter<TestimonialViewHolder>() {
-	var testimonials: List<Testimonial> = emptyList()
-		set(value) {
-			field = value
-			notifyDataSetChanged()
-		}
-
+class TestimonialAdapter :
+	ListAdapter<Testimonial, TestimonialViewHolder>(TestimonialItemDiffCallback()) {
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestimonialViewHolder {
-		return TestimonialViewHolder(
-			TestimonialView(
-				LayoutInflater.from(parent.context),
-				parent
-			)
-		)
+		val layoutInflater = LayoutInflater.from(parent.context)
+		val binding =
+			DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
+		return TestimonialViewHolder(binding)
 	}
 
-	override fun onBindViewHolder(holder: TestimonialViewHolder, position: Int) {
-		holder.bind(testimonials[position])
-	}
+	override fun onBindViewHolder(holder: TestimonialViewHolder, position: Int) =
+		holder.bind(getItem(position))
 
-	override fun getItemCount(): Int {
-		return testimonials.size
-	}
+	override fun getItemViewType(position: Int) = R.layout.testimonial_layout
 }
 
-class TestimonialViewHolder internal constructor(private val testimonialView: TestimonialView) :
-	RecyclerView.ViewHolder(testimonialView.view) {
-	internal fun bind(testimonial: Testimonial) {
-		testimonialView.bind(testimonial)
+class TestimonialItemDiffCallback : DiffUtil.ItemCallback<Testimonial>() {
+	override fun areItemsTheSame(oldItem: Testimonial, newItem: Testimonial): Boolean =
+		oldItem == newItem
+
+	override fun areContentsTheSame(oldItem: Testimonial, newItem: Testimonial): Boolean =
+		oldItem == newItem
+}
+
+class TestimonialViewHolder(private val binding: ViewDataBinding) :
+	RecyclerView.ViewHolder(binding.root) {
+	fun bind(testimonial: Testimonial) {
+		binding.setVariable(BR.item, testimonial)
+		binding.executePendingBindings()
 	}
 }

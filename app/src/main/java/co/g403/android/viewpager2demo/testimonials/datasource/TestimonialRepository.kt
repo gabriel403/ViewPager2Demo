@@ -1,4 +1,4 @@
-package co.g403.android.viewpager2demo.testimonials.network
+package co.g403.android.viewpager2demo.testimonials.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
